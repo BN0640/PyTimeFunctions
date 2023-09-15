@@ -102,14 +102,3 @@ def calcTime(mode = str,time1 = str, time2 = str):
         print('[CalcTime] ERROR: "mode" is out of range')
 
     return FormatTime(hour, minute, second, millisecond)
-
-while True:
-    result = FormatTime(1,1,1,1)
-    
-    print(result)
-    
-    break
-    
-    #print(f'Hours: {hour}, Minutes: {minute}, Seconds: {second}, Milliseconds: {millisecond}')
-    #print(f'{hour} Hours, {minute} Minutes, {second} Seconds, {millisecond} Milliseconds')
-    #print(f'New Time:{newTime}')
