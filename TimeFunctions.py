@@ -1,3 +1,5 @@
+import math
+
 def correctTime(hour = int, minute = int, second = int, millisecond = int):
     # --------------------------------------------------------------------------------------------------- #
     # This function gets some time units as parameters and return them correcting values above the limit  #
@@ -19,6 +21,29 @@ def correctTime(hour = int, minute = int, second = int, millisecond = int):
             minute -= 60
             hour += 1
     return hour, minute, second, millisecond
+
+def formatTime(hour = 0, minute = 0, second = 0, millisecond = 0):
+    # --------------------------------------------------------------------------------------------------- #
+    # This function gets time units as parameters and return them formated                                #
+    # Example:                                                                                            #
+    #   input: Hour: 1, Minute = 2, Seconds = 3, Milliseconds: 500                                        #
+    #   output: 01:02:03.500                                                                              #
+    # --------------------------------------------------------------------------------------------------- #
+
+    hour, minute, second, millisecond = correctTime(hour, minute, second, millisecond)
+
+    if hour < 10:
+        hour = f'0{hour}'
+    if minute < 10:
+        minute = f'0{minute}'
+    if second < 10:
+        second = f'0{second}'
+    if millisecond < 10:
+        millisecond = f'00{millisecond}'
+    elif millisecond < 100:
+        millisecond = f'0{millisecond}'
+
+    return f'{hour}:{minute}:{second}.{millisecond}'
 
 def deFormatTime(time = str):
     # --------------------------------------------------------------------------------------------------- #
@@ -43,29 +68,6 @@ def deFormatTime(time = str):
     hour, minute, second, millisecond = correctTime(hour, minute, second, millisecond)
 
     return hour, minute, second, millisecond
-
-def FormatTime(hour = 0, minute = 0, second = 0, millisecond = 0):
-    # --------------------------------------------------------------------------------------------------- #
-    # This function gets time units as parameters and return them formated                                #
-    # Example:                                                                                            #
-    #   input: Hour: 1, Minute = 2, Seconds = 3, Milliseconds: 500                                        #
-    #   output: 01:02:03.500                                                                              #
-    # --------------------------------------------------------------------------------------------------- #
-
-    hour, minute, second, millisecond = correctTime(hour, minute, second, millisecond)
-
-    if hour < 10:
-        hour = f'0{hour}'
-    if minute < 10:
-        minute = f'0{minute}'
-    if second < 10:
-        second = f'0{second}'
-    if millisecond < 10:
-        millisecond = f'00{millisecond}'
-    elif millisecond < 100:
-        millisecond = f'0{millisecond}'
-
-    return f'{hour}:{minute}:{second}.{millisecond}'
 
 def calcTime(mode = str,time1 = str, time2 = str):
     # --------------------------------------------------------------------------------------------------- #
@@ -101,4 +103,57 @@ def calcTime(mode = str,time1 = str, time2 = str):
     else:
         print('[CalcTime] ERROR: "mode" is out of range')
 
-    return FormatTime(hour, minute, second, millisecond)
+    return formatTime(hour, minute, second, millisecond)
+
+def multiplyTime(time = str, multiplier = int):
+    # --------------------------------------------------------------------------------------------------- #
+    # This function gets time units and a multiplier as parameters and return the result                  #
+    # Example:                                                                                            #
+    #   input: 01:35:00.000 * 2                                                                           #
+    #   output: 03:10:00.000                                                                              #
+    # --------------------------------------------------------------------------------------------------- #
+    
+    hour, minute, second, millisecond = deFormatTime(time)
+    hour *= multiplier
+    minute *= multiplier
+    second *= multiplier
+    millisecond *= multiplier
+
+    return formatTime(hour, minute, second, millisecond)
+
+def DivideTime(time = str, divisor = int):
+    # --------------------------------------------------------------------------------------------------- #
+    # This function gets time units and a divisor as parameters and return that fraction of the time      #
+    # Example:                                                                                            #
+    #   input: 01:30:55.000 / 2                                                                           #
+    #   output: 00:45:27.500                                                                              #
+    # --------------------------------------------------------------------------------------------------- #
+    
+    hour, minute, second, millisecond = deFormatTime(time)
+    hour        /= divisor
+    minute      /= divisor
+    second      /= divisor
+    millisecond /= divisor
+
+    hourRest = hour - math.floor(hour)
+    minuteRest = minute - math.floor(minute)
+    secondRest = second - math.floor(second)
+
+    while hourRest > 0 or minuteRest > 0 or secondRest > 0:
+        if hourRest > 0:
+            minute += 60 * hourRest
+            hour -= hourRest
+            hourRest = hour - math.floor(hour)
+        if minuteRest > 0:
+            second += 60 * minuteRest
+            minute -= minuteRest
+            minuteRest = minute - math.floor(minute)
+        if secondRest > 0:
+            millisecond += 1000 * secondRest
+            second -= secondRest
+            secondRest = second - math.floor(second)
+    
+    return formatTime(round(hour), round(minute), round(second), round(millisecond))
+
+result = DivideTime(input(),int(input()))
+print(result)
